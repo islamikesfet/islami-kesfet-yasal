@@ -33,3 +33,14 @@ th, td { text-align: left; vertical-align: top; padding: 10px 8px; border-bottom
 th { color: var(--muted); font-weight: 600; }
 .table-wrap { overflow-x: auto; }
 footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; }
+.center { text-align: center; padding-top: 12vh; }
+.btn { display: inline-block; background: var(--accent); color: #fff; border: 0; border-radius: 14px; padding: 14px 28px; font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; margin-top: 16px; }
+@media (prefers-color-scheme: dark) { .btn { color: #0d1f18; } }
+.btn:disabled { opacity: .6; }
+.form { max-width: 380px; margin: 0 auto; text-align: left; }
+.form label { display: block; font-weight: 600; margin: 16px 0 6px; }
+.form input { width: 100%; font: inherit; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+.form .btn { width: 100%; }
+.msg { min-height: 1.5em; margin-top: 12px; }
+.msg.err { color: #c0392b; }
+@media (prefers-color-scheme: dark) { .msg.err { color: #ff8a7a; } }

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hesabın Onaylandı</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="center">
+    <h1 id="title">Hesabın onaylandı</h1>
+    <p class="lead" id="text">Artık uygulamaya dönüp giriş yapabilirsin.</p>
+    <a class="btn" id="open" href="islamikesfet://">Uygulamayı aç</a>
+  </main>
+  <script>
+    // Supabase sends errors (e.g. expired link) in the hash or query.
+    var p = new URLSearchParams(location.hash.slice(1) + '&' + location.search.slice(1));
+    if (p.get('error')) {
+      document.getElementById('title').textContent = 'Bağlantı geçersiz';
+      document.getElementById('text').textContent = 'Onay bağlantısının süresi dolmuş ya da daha önce kullanılmış olabilir. Uygulamadan giriş yapmayı dene; gerekirse yeni bir onay e-postası iste.';
+    }
+    // Keep tokens out of the address bar.
+    history.replaceState(null, '', location.pathname);
+  </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Şifre Sıfırla</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="center">
+    <h1 id="title">Yeni şifre belirle</h1>
+    <p class="lead" id="text">Hesabın için yeni bir şifre gir.</p>
+    <form class="form" id="form" hidden>
+      <label for="pw">Yeni şifre</label>
+      <input id="pw" type="password" autocomplete="new-password" minlength="6" required>
+      <label for="pw2">Yeni şifre (tekrar)</label>
+      <input id="pw2" type="password" autocomplete="new-password" minlength="6" required>
+      <button class="btn" id="save" type="submit">Şifreyi kaydet</button>
+      <p class="msg" id="msg" role="alert"></p>
+    </form>
+    <a class="btn" id="open" href="islamikesfet://" hidden>Uygulamayı aç</a>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script>
+    var SUPABASE_URL = 'https://uylpvcjodbtavtfbvele.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_WDOSIwoVpnIrTRlg_iQExA_EBmqP9Iz';
+    var $ = function (id) { return document.getElementById(id); };
+    var params = new URLSearchParams(location.hash.slice(1) + '&' + location.search.slice(1));
+
+    function fail(text) {
+      $('title').textContent = 'Bağlantı geçersiz';
+      $('text').textContent = text || 'Sıfırlama bağlantısının süresi dolmuş ya da daha önce kullanılmış. Uygulamadan yeni bir bağlantı iste.';
+      $('form').hidden = true;
+    }
+
+    if (params.get('error')) {
+      fail();
+    } else {
+      var client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+        auth: { detectSessionInUrl: true, persistSession: false, flowType: 'implicit' },
+      });
+      client.auth.getSession().then(function (res) {
+        history.replaceState(null, '', location.pathname);
+        if (res.data.session) $('form').hidden = false; else fail();
+      });
+
+      $('form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var pw = $('pw').value, msg = $('msg');
+        msg.className = 'msg err';
+        if (pw.length < 6) { msg.textContent = 'Şifre en az 6 karakter olmalı.'; return; }
+        if (pw !== $('pw2').value) { msg.textContent = 'Şifreler eşleşmiyor.'; return; }
+        $('save').disabled = true; msg.textContent = '';
+        client.auth.updateUser({ password: pw }).then(function (res) {
+          $('save').disabled = false;
+          if (res.error) {
+            msg.textContent = res.error.code === 'same_password'
+              ? 'Yeni şifre eskisiyle aynı olamaz.'
+              : 'Şifre güncellenemedi: ' + res.error.message;
+            return;
+          }
+          client.auth.signOut({ scope: 'local' });
+          $('form').hidden = true;
+          $('title').textContent = 'Şifren güncellendi';
+          $('text').textContent = 'Artık uygulamaya dönüp yeni şifrenle giriş yapabilirsin.';
+          $('open').hidden = false;
+        });
+      });
+    }
+  </script>
+</body>
+</html>
